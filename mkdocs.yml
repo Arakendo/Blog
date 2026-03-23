@@ -1,0 +1,72 @@
+site_name: Blog
+site_description: Personal blog.
+site_url: https://arakendo.github.io/Blog/
+repo_url: https://github.com/Arakendo/Blog
+repo_name: Arakendo/Blog
+
+docs_dir: docs
+site_dir: site
+
+theme:
+  name: material
+  custom_dir: docs/overrides
+
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+
+  icon:
+    logo: material/feather
+    repo: material/github
+
+extra_css:
+  - overrides/css/extra.css
+
+plugins:
+  - search
+  - blog:
+      blog_dir: blog
+      post_url_format: "{date}/{slug}"
+      archive: true
+      archive_name: Archive
+      categories: true
+      categories_name: Categories
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Blog: blog/index.md
