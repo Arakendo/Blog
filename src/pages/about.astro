@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ConstructionNotice from '../components/ConstructionNotice.astro';
+---
+
+<BaseLayout title="About" description="About this public engineering notebook.">
+  <article class="content-shell">
+    <header class="article-header">
+      <p class="eyebrow">About this notebook</p>
+      <h1>The projects are evidence.</h1>
+      <p class="lede">
+        This site follows an evolving way of thinking about software architecture through
+        language, evidence, implementation, and long-term design.
+      </p>
+    </header>
+    <ConstructionNotice />
+    <div class="prose">
+      <h2>Why this exists</h2>
+      <p>
+        Tonesu began as a constructed-language project. Working on words, categories, scope,
+        composition, and corpora made assumptions visible that ordinary software vocabulary
+        often leaves implicit. Over time, that changed how later projects were designed.
+      </p>
+      <p>
+        Tokimu, Tosumu, Weaver, and Anvil explore those lessons in very different domains. This
+        notebook connects their discoveries without replacing their own documentation.
+      </p>
+      <h2>What belongs here</h2>
+      <p>
+        Durable ideas explain the current understanding. Project dossiers provide evidence.
+        Journal entries preserve discovery and revision. The Architecture Atlas connects the
+        vocabulary used across all three.
+      </p>
+    </div>
+  </article>
+</BaseLayout>

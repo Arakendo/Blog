@@ -1,0 +1,20 @@
+---
+interface Props {
+  compact?: boolean;
+}
+
+const { compact = false } = Astro.props;
+---
+
+<aside class:list={['admonition', 'construction-notice', { compact }]} aria-label="Page status">
+  <p class="admonition-title">Page under construction</p>
+  {
+    !compact && (
+      <p>
+        This page establishes the shape of the site while the underlying notes are being
+        reviewed and turned into publishable writing. Expect gaps, revisions, and sharper
+        claims over time.
+      </p>
+    )
+  }
+</aside>

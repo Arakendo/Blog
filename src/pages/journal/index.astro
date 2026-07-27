@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { withBase } from '../../lib/urls';
+
+const entries = (await getCollection('journal'))
+  .filter((entry) => entry.data.status !== 'draft')
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+---
+
+<BaseLayout title="Journal" description="Dated writing about discoveries, changes, and open questions.">
+  <section class="listing-hero section-shell">
+    <p class="eyebrow">Chronological record</p>
+    <h1>Journal</h1>
+    <p class="lede">
+      Articles, design journal entries, research notes, and smaller observations. These pages
+      preserve what was understood at the time—even when a later entry changes the conclusion.
+    </p>
+  </section>
+  <section class="section-shell">
+    <div class="journal-list">
+      {
+        entries.map((entry) => (
+          <EntryCard
+            href={withBase(`/journal/${entry.id}/`)}
+            eyebrow={entry.data.kind.replace('-', ' ')}
+            title={entry.data.title}
+            summary={entry.data.description}
+            meta={entry.data.published.toLocaleDateString('en-US', { dateStyle: 'long' })}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

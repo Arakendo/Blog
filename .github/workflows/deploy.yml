@@ -1,31 +1,32 @@
-name: Deploy MkDocs to GitHub Pages
+name: Deploy Astro to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Check out the repository
+        uses: actions/checkout@v7
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x'
+      - name: Install, build, and upload the site
+        uses: withastro/action@v6
 
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - name: Deploy to GitHub Pages
-        run: |
-          COMMIT_SHA=$(git log -1 --pretty=format:"%h")
-          COMMIT_MSG=$(git log -1 --pretty=format:"%s")
-          mkdocs gh-deploy --force --message "deploy ${COMMIT_SHA}: ${COMMIT_MSG}"
+        id: deployment
+        uses: actions/deploy-pages@v5

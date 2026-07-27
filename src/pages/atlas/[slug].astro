@@ -1,0 +1,28 @@
+---
+import { getCollection, render, type CollectionEntry } from 'astro:content';
+import ContentLayout from '../../layouts/ContentLayout.astro';
+
+export async function getStaticPaths() {
+  const atlas = await getCollection('atlas');
+  return atlas.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: CollectionEntry<'atlas'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<ContentLayout
+  title={entry.data.term}
+  description={entry.data.summary}
+  eyebrow="Architecture Atlas"
+  status={entry.data.status}
+  tags={entry.data.tags}
+  projects={entry.data.projects}
+  underConstruction={entry.data.underConstruction}
+>
+  <Content />
+</ContentLayout>

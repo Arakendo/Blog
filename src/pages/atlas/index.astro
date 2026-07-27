@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ConstructionNotice from '../../components/ConstructionNotice.astro';
+import { withBase } from '../../lib/urls';
+
+const terms = (await getCollection('atlas')).sort((a, b) => a.data.term.localeCompare(b.data.term));
+---
+
+<BaseLayout title="Architecture Atlas" description="A glossary and relationship map for recurring concepts.">
+  <section class="listing-hero section-shell">
+    <p class="eyebrow">Concept index</p>
+    <h1>Architecture Atlas</h1>
+    <p class="lede">
+      Short definitions for the vocabulary used across the site, with links back to projects,
+      journal entries, and deeper explanations.
+    </p>
+    <ConstructionNotice compact />
+  </section>
+  <section class="section-shell">
+    <ol class="atlas-list">
+      {
+        terms.map((entry) => (
+          <li>
+            <a href={withBase(`/atlas/${entry.id}/`)}>
+              <strong>{entry.data.term}</strong>
+              <span>{entry.data.summary}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </section>
+</BaseLayout>

@@ -1,0 +1,13 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/urls';
+---
+
+<BaseLayout title="Page not found">
+  <section class="error-page section-shell">
+    <p class="eyebrow">404</p>
+    <h1>This path ends here.</h1>
+    <p>The page may have moved while the notebook is being reorganized.</p>
+    <a class="button primary" href={withBase('/')}>Return home</a>
+  </section>
+</BaseLayout>

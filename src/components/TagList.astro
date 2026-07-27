@@ -1,0 +1,21 @@
+---
+import { withBase } from '../lib/urls';
+
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <ul class="tag-list" aria-label="Concept tags">
+      {tags.map((tag) => (
+        <li>
+          <a href={withBase(`/tags/${tag}/`)}>{tag.replaceAll('-', ' ')}</a>
+        </li>
+      ))}
+    </ul>
+  )
+}

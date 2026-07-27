@@ -1,0 +1,53 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import ConstructionNotice from '../components/ConstructionNotice.astro';
+import TagList from '../components/TagList.astro';
+import { projectNames } from '../data/site';
+import { withBase } from '../lib/urls';
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow: string;
+  status?: string;
+  tags?: string[];
+  projects?: Array<keyof typeof projectNames>;
+  date?: Date;
+  underConstruction?: boolean;
+}
+
+const {
+  title,
+  description,
+  eyebrow,
+  status,
+  tags = [],
+  projects = [],
+  date,
+  underConstruction = false,
+} = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <article class="content-shell">
+    <header class="article-header">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1>{title}</h1>
+      <p class="lede">{description}</p>
+      <div class="content-meta">
+        {date && <time datetime={date.toISOString()}>{date.toLocaleDateString('en-US', { dateStyle: 'long' })}</time>}
+        {status && <span>{status}</span>}
+        {
+          projects.map((project) => (
+            <a href={withBase(`/projects/${project}/`)}>{projectNames[project]}</a>
+          ))
+        }
+      </div>
+      <TagList tags={tags} />
+    </header>
+    {underConstruction && <ConstructionNotice />}
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

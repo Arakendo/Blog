@@ -1,0 +1,80 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import { withBase } from '../../lib/urls';
+
+export async function getStaticPaths() {
+  const [projects, ideas, journal, atlas] = await Promise.all([
+    getCollection('projects'),
+    getCollection('ideas'),
+    getCollection('journal', ({ data }) => data.status !== 'draft'),
+    getCollection('atlas'),
+  ]);
+
+  const records = [
+    ...projects.map((entry) => ({
+      id: entry.id,
+      type: 'Project',
+      title: entry.data.title,
+      summary: entry.data.summary,
+      tags: entry.data.themes,
+      href: `/projects/${entry.id}/`,
+    })),
+    ...ideas.map((entry) => ({
+      id: entry.id,
+      type: 'Idea',
+      title: entry.data.title,
+      summary: entry.data.summary,
+      tags: entry.data.tags,
+      href: `/ideas/${entry.id}/`,
+    })),
+    ...journal.map((entry) => ({
+      id: entry.id,
+      type: entry.data.kind.replace('-', ' '),
+      title: entry.data.title,
+      summary: entry.data.description,
+      tags: entry.data.tags,
+      href: `/journal/${entry.id}/`,
+    })),
+    ...atlas.map((entry) => ({
+      id: entry.id,
+      type: 'Atlas',
+      title: entry.data.term,
+      summary: entry.data.summary,
+      tags: entry.data.tags,
+      href: `/atlas/${entry.id}/`,
+    })),
+  ];
+
+  const tags = [...new Set(records.flatMap((record) => record.tags))];
+  return tags.map((tag) => ({
+    params: { tag },
+    props: { tag, records: records.filter((record) => record.tags.includes(tag)) },
+  }));
+}
+
+const { tag, records } = Astro.props;
+---
+
+<BaseLayout title={tag.replaceAll('-', ' ')} description={`Writing tagged with ${tag}.`}>
+  <section class="listing-hero section-shell">
+    <p class="eyebrow">Concept tag</p>
+    <h1>{tag.replaceAll('-', ' ')}</h1>
+    <p class="lede">{records.length} connected {records.length === 1 ? 'page' : 'pages'}.</p>
+  </section>
+  <section class="section-shell">
+    <div class="card-grid">
+      {
+        records.map((record: { href: string; type: string; title: string; summary: string }) => (
+          <EntryCard
+            href={withBase(record.href)}
+            eyebrow={record.type}
+            title={record.title}
+            summary={record.summary}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>

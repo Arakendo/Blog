@@ -1,0 +1,88 @@
+---
+import '../styles/global.css';
+import { site } from '../data/site';
+import { withBase } from '../lib/urls';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = site.description } = Astro.props;
+const pageTitle = title ? `${title} · ${site.title}` : site.title;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const navigation = [
+  ['Ideas', '/ideas/'],
+  ['Projects', '/projects/'],
+  ['Journal', '/journal/'],
+  ['Atlas', '/atlas/'],
+  ['About', '/about/'],
+] as const;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#11111b" />
+    <link rel="canonical" href={canonical} />
+    <title>{pageTitle}</title>
+    <script is:inline>
+      const storedTheme = localStorage.getItem('theme');
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = storedTheme ?? (systemDark ? 'dark' : 'light');
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href={withBase('/')}>
+          <span class="brand-mark" aria-hidden="true">A:</span>
+          <span>{site.title}</span>
+        </a>
+        <nav aria-label="Primary navigation">
+          <ul>
+            {
+              navigation.map(([label, href]) => (
+                <li>
+                  <a
+                    href={withBase(href)}
+                    aria-current={Astro.url.pathname.includes(href) ? 'page' : undefined}
+                  >
+                    {label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        <button class="theme-toggle" type="button" aria-label="Toggle color theme">
+          <span class="theme-icon" aria-hidden="true">◐</span>
+        </button>
+      </div>
+    </header>
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div>
+        <p>A public engineering notebook.</p>
+        <p>
+          <a href={site.repository}>Source on GitHub</a>
+        </p>
+      </div>
+    </footer>
+    <script>
+      const toggle = document.querySelector<HTMLButtonElement>('.theme-toggle');
+      toggle?.addEventListener('click', () => {
+        const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = next;
+        localStorage.setItem('theme', next);
+      });
+    </script>
+  </body>
+</html>

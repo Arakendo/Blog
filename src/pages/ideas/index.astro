@@ -1,0 +1,36 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EntryCard from '../../components/EntryCard.astro';
+import ConstructionNotice from '../../components/ConstructionNotice.astro';
+import { withBase } from '../../lib/urls';
+
+const ideas = (await getCollection('ideas')).sort((a, b) => a.data.title.localeCompare(b.data.title));
+---
+
+<BaseLayout title="Ideas" description="Durable explanations of ideas discovered across projects.">
+  <section class="listing-hero section-shell">
+    <p class="eyebrow">Current understanding</p>
+    <h1>Ideas</h1>
+    <p class="lede">
+      Slowly evolving explanations of the concepts that recur across language design, storage,
+      rendering, product systems, and execution.
+    </p>
+    <ConstructionNotice compact />
+  </section>
+  <section class="section-shell">
+    <div class="card-grid">
+      {
+        ideas.map((idea) => (
+          <EntryCard
+            href={withBase(`/ideas/${idea.id}/`)}
+            eyebrow={idea.data.status}
+            title={idea.data.title}
+            summary={idea.data.summary}
+            meta={idea.data.projects.join(' · ')}
+          />
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
